@@ -147,76 +147,76 @@ async function main() {
                     nama,
                 ).id;
 
-                const [proyekSatu, proyekDua] = await tx
-                    .insert(projects)
-                    .values([
-                        {
-                            slug: "sistem-reservasi-laboratorium",
-                            title: "Sistem Reservasi Laboratorium",
-                            summary:
-                                "Aplikasi web untuk memesan jadwal laboratorium komputer kampus, lengkap dengan kalender ketersediaan dan persetujuan oleh admin.",
-                            descriptionMd: [
-                                "Aplikasi untuk menggantikan pencatatan jadwal laboratorium yang sebelumnya memakai spreadsheet.",
-                                "",
-                                "**Fitur utama**",
-                                "",
-                                "- Kalender ketersediaan ruangan per hari",
-                                "- Pengajuan reservasi oleh mahasiswa dan persetujuan oleh admin",
-                                "- Notifikasi status reservasi",
-                                "- Riwayat pemakaian laboratorium",
-                                "",
-                                "**Yang dipelajari**: merancang skema database relasional, validasi form di sisi server, dan membagi hak akses antara mahasiswa dan admin.",
-                            ].join("\n"),
-                            category: "web",
-                            projectDate: "2025-06-01",
-                            role: "Full-stack developer",
-                            githubUrl: "https://github.com/GANTI/reservasi-lab",
-                            demoUrl: "https://example.com",
-                            status: "published",
-                            isFeatured: true,
-                            sortOrder: 1,
-                            publishedAt: new Date(),
-                        },
-                        {
-                            slug: "aplikasi-inventaris-himpunan",
-                            title: "Aplikasi Inventaris Himpunan",
-                            summary:
-                                "Aplikasi pencatatan dan peminjaman barang milik himpunan mahasiswa, dengan pelacakan status barang dan laporan bulanan.",
-                            descriptionMd: [
-                                "Dibuat untuk membantu pengurus himpunan mencatat barang yang dipinjam dan dikembalikan.",
-                                "",
-                                "**Fitur utama**",
-                                "",
-                                "- Daftar barang beserta kondisi dan jumlahnya",
-                                "- Pencatatan peminjaman dan pengembalian",
-                                "- Laporan bulanan yang bisa diunduh",
-                            ].join("\n"),
-                            category: "web",
-                            projectDate: "2025-01-01",
-                            role: "Backend developer",
-                            githubUrl:
-                                "https://github.com/GANTI/inventaris-himpunan",
-                            status: "published",
-                            sortOrder: 2,
-                            publishedAt: new Date(),
-                        },
-                    ])
-                    .returning();
-                const p1 = must(proyekSatu, "proyek satu").id;
-                const p2 = must(proyekDua, "proyek dua").id;
-
-                await tx.insert(projectTechnologies).values([
-                    { projectId: p1, technologyId: idTeknologi("Next.js") },
-                    { projectId: p1, technologyId: idTeknologi("TypeScript") },
-                    { projectId: p1, technologyId: idTeknologi("PostgreSQL") },
+            const [proyekSatu, proyekDua] = await tx
+                .insert(projects)
+                .values([
                     {
-                        projectId: p1,
-                        technologyId: idTeknologi("Tailwind CSS"),
+                        slug: "sistem-reservasi-laboratorium",
+                        title: "Sistem Reservasi Laboratorium",
+                        summary:
+                            "Aplikasi web untuk memesan jadwal laboratorium komputer kampus, lengkap dengan kalender ketersediaan dan persetujuan oleh admin.",
+                        descriptionMd: [
+                            "Aplikasi untuk menggantikan pencatatan jadwal laboratorium yang sebelumnya memakai spreadsheet.",
+                            "",
+                            "**Fitur utama**",
+                            "",
+                            "- Kalender ketersediaan ruangan per hari",
+                            "- Pengajuan reservasi oleh mahasiswa dan persetujuan oleh admin",
+                            "- Notifikasi status reservasi",
+                            "- Riwayat pemakaian laboratorium",
+                            "",
+                            "**Yang dipelajari**: merancang skema database relasional, validasi form di sisi server, dan membagi hak akses antara mahasiswa dan admin.",
+                        ].join("\n"),
+                        category: "web",
+                        projectDate: "2025-06-01",
+                        role: "Full-stack developer",
+                        githubUrl: "https://github.com/GANTI/reservasi-lab",
+                        demoUrl: "https://example.com",
+                        status: "published",
+                        isFeatured: true,
+                        sortOrder: 1,
+                        publishedAt: new Date(),
                     },
-                    { projectId: p2, technologyId: idTeknologi("Laravel") },
-                    { projectId: p2, technologyId: idTeknologi("PHP") },
-                    { projectId: p2, technologyId: idTeknologi("MySQL") },
-                ]);
+                    {
+                        slug: "aplikasi-inventaris-himpunan",
+                        title: "Aplikasi Inventaris Himpunan",
+                        summary:
+                            "Aplikasi pencatatan dan peminjaman barang milik himpunan mahasiswa, dengan pelacakan status barang dan laporan bulanan.",
+                        descriptionMd: [
+                            "Dibuat untuk membantu pengurus himpunan mencatat barang yang dipinjam dan dikembalikan.",
+                            "",
+                            "**Fitur utama**",
+                            "",
+                            "- Daftar barang beserta kondisi dan jumlahnya",
+                            "- Pencatatan peminjaman dan pengembalian",
+                            "- Laporan bulanan yang bisa diunduh",
+                        ].join("\n"),
+                        category: "web",
+                        projectDate: "2025-01-01",
+                        role: "Backend developer",
+                        githubUrl:
+                            "https://github.com/GANTI/inventaris-himpunan",
+                        status: "published",
+                        sortOrder: 2,
+                        publishedAt: new Date(),
+                    },
+                ])
+                .returning();
+            const p1 = must(proyekSatu, "proyek satu").id;
+            const p2 = must(proyekDua, "proyek dua").id;
+
+            await tx.insert(projectTechnologies).values([
+                { projectId: p1, technologyId: idTeknologi("Next.js") },
+                { projectId: p1, technologyId: idTeknologi("TypeScript") },
+                { projectId: p1, technologyId: idTeknologi("PostgreSQL") },
+                {
+                    projectId: p1,
+                    technologyId: idTeknologi("Tailwind CSS"),
+                },
+                { projectId: p2, technologyId: idTeknologi("Laravel") },
+                { projectId: p2, technologyId: idTeknologi("PHP") },
+                { projectId: p2, technologyId: idTeknologi("MySQL") },
+            ]);
 
             await tx.insert(experiences).values({
                 kind: "organization",
