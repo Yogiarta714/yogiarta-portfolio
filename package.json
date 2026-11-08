@@ -14,6 +14,7 @@
         "db:migrate": "drizzle-kit migrate",
         "db:migrate:prod": "dotenv -e .env.production.local -- drizzle-kit migrate",
         "db:studio": "drizzle-kit studio",
+        "db:check": "tsx scripts/db-check.ts",
         "seed:admin": "tsx scripts/seed-admin.ts",
         "seed:content": "tsx scripts/seed-content.ts",
         "admin:set-password": "tsx scripts/set-admin-password.ts"
