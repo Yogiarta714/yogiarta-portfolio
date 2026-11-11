@@ -8,4 +8,11 @@ const schema = z.object({
     NEXT_PUBLIC_SITE_URL: z.string().url(),
 });
 
-export const env = schema.parse(process.env);
+const parsed = schema.safeParse(process.env);
+
+if (!parsed.success) {
+    const nama = Object.keys(parsed.error.flatten().fieldErrors).join(", ");
+    throw new Error(`Variabel environment belum benar: ${nama}`);
+}
+
+export const env = parsed.data;
