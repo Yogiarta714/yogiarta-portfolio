@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { profileSchema, readProfileForm } from "@/lib/validators/profile";
+import {
+    profileSchema,
+    readProfileForm,
+    toProfileValues,
+} from "@/lib/validators/profile";
 
 function formWith(overrides: Record<string, string> = {}) {
     const fd = new FormData();
@@ -63,5 +67,20 @@ describe("profileSchema", () => {
         const raw = readProfileForm(new FormData());
         expect(raw.fullName).toBe("");
         expect(Object.keys(raw)).toEqual(Object.keys(profileSchema.shape));
+    });
+});
+
+describe("toProfileValues", () => {
+    it("mengubah null jadi string kosong dan menyalin nilai yang ada", () => {
+        const values = toProfileValues({ fullName: "Yogi", university: null });
+        expect(values.fullName).toBe("Yogi");
+        expect(values.university).toBe("");
+        expect(values.seoTitle).toBe("");
+    });
+
+    it("mengembalikan semua kolom kosong kalau baris belum ada", () => {
+        const values = toProfileValues(null);
+        expect(Object.keys(values)).toEqual(Object.keys(profileSchema.shape));
+        expect(Object.values(values).every((v) => v === "")).toBe(true);
     });
 });

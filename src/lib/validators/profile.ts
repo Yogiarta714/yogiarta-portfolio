@@ -56,3 +56,18 @@ export function readProfileForm(formData: FormData): Record<string, string> {
     }
     return raw;
 }
+
+export type ProfileValues = Record<keyof ProfileInput, string>;
+
+/** Ubah baris database (atau null) menjadi nilai awal form: null jadi string kosong. */
+export function toProfileValues(
+    row: Partial<Record<keyof ProfileInput, string | null>> | null,
+): ProfileValues {
+    const values = {} as ProfileValues;
+    for (const key of Object.keys(
+        profileSchema.shape,
+    ) as (keyof ProfileInput)[]) {
+        values[key] = row?.[key] ?? "";
+    }
+    return values;
+}

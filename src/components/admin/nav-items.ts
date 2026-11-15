@@ -6,7 +6,7 @@ export type AdminNavItem = {
 
 export const adminNavItems: AdminNavItem[] = [
     { label: "Dashboard", href: "/admin", ready: true },
-    { label: "Profil", href: "/admin/profile", ready: false },
+    { label: "Profil", href: "/admin/profile", ready: true },
     { label: "Proyek", href: "/admin/projects", ready: false },
     { label: "Skills dan teknologi", href: "/admin/skills", ready: false },
     { label: "Pengalaman", href: "/admin/experience", ready: false },
