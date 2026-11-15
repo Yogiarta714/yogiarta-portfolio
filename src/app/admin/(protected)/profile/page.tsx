@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
+import { Suspense } from "react";
+import { FormSkeleton } from "@/components/admin/form-skeleton";
 import { ProfileForm } from "@/components/admin/profile-form";
 import { listMedia } from "@/lib/admin-queries/media";
 import { getProfile } from "@/lib/admin-queries/profile";
@@ -7,10 +9,14 @@ import { toProfileValues } from "@/lib/validators/profile";
 
 export const metadata: Metadata = { title: "Profil" };
 
-export default async function ProfilePage() {
+// Bagian yang butuh data dipisah, supaya judul halaman bisa tampil lebih dulu
+async function ProfileFormLoader() {
     await connection();
     const [row, media] = await Promise.all([getProfile(), listMedia()]);
+    return <ProfileForm initial={toProfileValues(row)} media={media} />;
+}
 
+export default function ProfilePage() {
     return (
         <div className="max-w-5xl space-y-6">
             <div>
@@ -19,7 +25,9 @@ export default async function ProfilePage() {
                     Teks utama yang tampil di halaman publik.
                 </p>
             </div>
-            <ProfileForm initial={toProfileValues(row)} media={media} />
+            <Suspense fallback={<FormSkeleton />}>
+                <ProfileFormLoader />
+            </Suspense>
         </div>
     );
 }

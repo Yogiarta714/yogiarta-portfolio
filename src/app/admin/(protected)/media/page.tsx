@@ -1,16 +1,103 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
+import { Suspense } from "react";
+import { DeleteMediaButton } from "@/components/admin/delete-media-button";
 import { MediaUploader } from "@/components/admin/media-uploader";
 import { listMedia } from "@/lib/admin-queries/media";
 import { formatBytes } from "@/lib/format";
-import { DeleteMediaButton } from "@/components/admin/delete-media-button";
 
 export const metadata: Metadata = { title: "Media" };
 
-export default async function MediaPage() {
+async function MediaList() {
     await connection();
     const items = await listMedia();
 
+    return (
+        <>
+            <h2 className="font-sans text-base font-semibold">
+                Semua file ({items.length})
+            </h2>
+            {items.length === 0 ? (
+                <p className="text-muted-foreground">Belum ada file.</p>
+            ) : (
+                <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {items.map((item) => (
+                        <li
+                            key={item.id}
+                            className="bg-card border-border/60 overflow-hidden rounded-2xl border shadow-sm"
+                        >
+                            {item.kind === "image" ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                    src={item.url}
+                                    alt={item.altText ?? ""}
+                                    loading="lazy"
+                                    className="bg-secondary aspect-video w-full object-cover"
+                                />
+                            ) : (
+                                <div className="bg-secondary text-muted-foreground grid aspect-video place-items-center font-mono text-sm">
+                                    PDF
+                                </div>
+                            )}
+                            <div className="space-y-1 p-4">
+                                <p
+                                    className="truncate font-medium"
+                                    title={item.originalName}
+                                >
+                                    {item.originalName}
+                                </p>
+                                <p className="text-muted-foreground text-sm">
+                                    {formatBytes(item.sizeBytes)}
+                                    {item.width && item.height
+                                        ? ` · ${item.width}×${item.height}`
+                                        : ""}
+                                </p>
+                                {item.kind === "image" && !item.altText && (
+                                    <p className="text-muted-foreground text-sm">
+                                        Belum ada teks alternatif
+                                    </p>
+                                )}
+                                <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                                    <a
+                                        href={item.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-primary text-sm font-medium underline-offset-4 hover:underline"
+                                    >
+                                        Buka ↗
+                                    </a>
+                                    <DeleteMediaButton
+                                        id={item.id}
+                                        name={item.originalName}
+                                    />
+                                </div>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </>
+    );
+}
+
+function MediaListSkeleton() {
+    return (
+        <div
+            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            role="status"
+            aria-label="Memuat"
+        >
+            {[0, 1, 2].map((i) => (
+                <div
+                    key={i}
+                    className="bg-card border-border/60 h-64 animate-pulse rounded-2xl border"
+                />
+            ))}
+        </div>
+    );
+}
+
+export default function MediaPage() {
     return (
         <div className="max-w-5xl space-y-8">
             <div>
@@ -22,13 +109,13 @@ export default async function MediaPage() {
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
-                <section className="bg-card space-y-4 rounded-xl border p-6">
+                <section className="bg-card border-border/60 space-y-4 rounded-2xl border p-6 shadow-sm">
                     <h2 className="font-sans text-base font-semibold">
                         Unggah gambar
                     </h2>
                     <MediaUploader kind="image" refreshAfterUpload />
                 </section>
-                <section className="bg-card space-y-4 rounded-xl border p-6">
+                <section className="bg-card border-border/60 space-y-4 rounded-2xl border p-6 shadow-sm">
                     <h2 className="font-sans text-base font-semibold">
                         Unggah PDF
                     </h2>
@@ -37,68 +124,9 @@ export default async function MediaPage() {
             </div>
 
             <section className="space-y-4">
-                <h2 className="font-sans text-base font-semibold">
-                    Semua file ({items.length})
-                </h2>
-                {items.length === 0 ? (
-                    <p className="text-muted-foreground">Belum ada file.</p>
-                ) : (
-                    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {items.map((item) => (
-                            <li
-                                key={item.id}
-                                className="bg-card overflow-hidden rounded-xl border"
-                            >
-                                {item.kind === "image" ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img
-                                        src={item.url}
-                                        alt={item.altText ?? ""}
-                                        loading="lazy"
-                                        className="bg-secondary aspect-video w-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="bg-secondary text-muted-foreground grid aspect-video place-items-center font-mono text-sm">
-                                        PDF
-                                    </div>
-                                )}
-                                <div className="space-y-1 p-4">
-                                    <p
-                                        className="truncate font-medium"
-                                        title={item.originalName}
-                                    >
-                                        {item.originalName}
-                                    </p>
-                                    <p className="text-muted-foreground text-sm">
-                                        {formatBytes(item.sizeBytes)}
-                                        {item.width && item.height
-                                            ? ` · ${item.width}×${item.height}`
-                                            : ""}
-                                    </p>
-                                    {item.kind === "image" && !item.altText && (
-                                        <p className="text-muted-foreground text-sm">
-                                            Belum ada teks alternatif
-                                        </p>
-                                    )}
-                                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-                                        <a
-                                            href={item.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-primary text-sm font-medium underline-offset-4 hover:underline"
-                                        >
-                                            Buka ↗
-                                        </a>
-                                        <DeleteMediaButton
-                                            id={item.id}
-                                            name={item.originalName}
-                                        />
-                                    </div>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                )}
+                <Suspense fallback={<MediaListSkeleton />}>
+                    <MediaList />
+                </Suspense>
             </section>
         </div>
     );

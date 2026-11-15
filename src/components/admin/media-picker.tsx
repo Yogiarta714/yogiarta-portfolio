@@ -119,7 +119,7 @@ export function MediaPicker({
             </div>
 
             {open && (
-                <div className="space-y-5 rounded-lg border p-4">
+                <div className="bg-secondary/50 space-y-5 rounded-xl p-4">
                     <div className="space-y-2">
                         <p className="text-sm font-medium">
                             Pilih dari file yang ada

@@ -3,123 +3,11 @@
 import { useActionState, useEffect, useState, type ChangeEvent } from "react";
 import { saveProfileAction } from "@/actions/profile";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Field, Section } from "@/components/admin/form-kit";
 import { MediaPicker } from "@/components/admin/media-picker";
 import type { ActionResult } from "@/lib/action-result";
 import type { ProfileValues } from "@/lib/validators/profile";
 import type { MediaItem } from "@/lib/media-rules";
-
-type FieldProps = {
-    name: string;
-    label: string;
-    value: string;
-    error?: string;
-    onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-    hint?: string;
-    max?: number;
-    multiline?: boolean;
-    rows?: number;
-    required?: boolean;
-    type?: string;
-};
-
-function Field({
-    name,
-    label,
-    value,
-    error,
-    onChange,
-    hint,
-    max,
-    multiline,
-    rows = 3,
-    required,
-    type = "text",
-}: FieldProps) {
-    const errorId = `${name}-error`;
-    const hintId = `${name}-hint`;
-    const hasHint = Boolean(hint) || max !== undefined;
-    const describedBy =
-        [error ? errorId : null, hasHint ? hintId : null]
-            .filter(Boolean)
-            .join(" ") || undefined;
-
-    const common = {
-        id: name,
-        name,
-        value,
-        onChange,
-        "aria-invalid": Boolean(error),
-        "aria-describedby": describedBy,
-    };
-
-    return (
-        <div className="space-y-1.5">
-            <Label htmlFor={name}>
-                {label}
-                {required && (
-                    <span aria-hidden="true" className="text-primary">
-                        {" "}
-                        *
-                    </span>
-                )}
-            </Label>
-            {multiline ? (
-                <Textarea rows={rows} className="text-base" {...common} />
-            ) : (
-                <Input type={type} className="h-11 text-base" {...common} />
-            )}
-            {error && (
-                <p id={errorId} className="text-destructive text-sm">
-                    {error}
-                </p>
-            )}
-            {hasHint && (
-                <p
-                    id={hintId}
-                    className="text-muted-foreground flex justify-between gap-4 text-sm"
-                >
-                    <span>{hint}</span>
-                    {max !== undefined && (
-                        <span
-                            className={
-                                value.length > max ? "text-destructive" : ""
-                            }
-                        >
-                            {value.length}/{max}
-                        </span>
-                    )}
-                </p>
-            )}
-        </div>
-    );
-}
-
-function Section({
-    title,
-    description,
-    children,
-}: {
-    title: string;
-    description?: string;
-    children: React.ReactNode;
-}) {
-    return (
-        <section className="bg-card grid gap-5 rounded-xl border p-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-10">
-            <div>
-                <h2 className="font-sans text-base font-semibold">{title}</h2>
-                {description && (
-                    <p className="text-muted-foreground mt-1 text-sm">
-                        {description}
-                    </p>
-                )}
-            </div>
-            <div className="space-y-5">{children}</div>
-        </section>
-    );
-}
 
 export function ProfileForm({
     initial,
@@ -167,6 +55,10 @@ export function ProfileForm({
         };
     const images = media.filter((m) => m.kind === "image");
     const pdfs = media.filter((m) => m.kind === "pdf");
+
+    const dirty = (Object.keys(initial) as (keyof ProfileValues)[]).some(
+        (key) => values[key] !== initial[key],
+    );
 
     return (
         <form action={formAction} className="space-y-6" noValidate>
@@ -298,20 +190,25 @@ export function ProfileForm({
                 />
             </Section>
 
-            <div className="bg-background/90 sticky bottom-0 -mx-1 flex flex-wrap items-center gap-4 border-t px-1 py-4 backdrop-blur">
-                <Button type="submit" disabled={pending}>
-                    {pending ? "Menyimpan..." : "Simpan perubahan"}
-                </Button>
-                {saved && (
-                    <p role="status" className="text-sm">
-                        Tersimpan.
-                    </p>
-                )}
-                {error && (
+            <div className="bg-card/95 border-border/60 sticky bottom-4 z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border p-3 pl-5 shadow-lg backdrop-blur">
+                {error ? (
                     <p role="alert" className="text-destructive text-sm">
                         {error.message}
                     </p>
+                ) : (
+                    <p role="status" className="text-muted-foreground text-sm">
+                        {pending
+                            ? "Menyimpan…"
+                            : dirty
+                                ? "Ada perubahan yang belum disimpan"
+                                : saved
+                                    ? "Tersimpan."
+                                    : "Belum ada perubahan"}
+                    </p>
                 )}
+                <Button type="submit" disabled={pending || !dirty}>
+                    {pending ? "Menyimpan..." : "Simpan perubahan"}
+                </Button>
             </div>
         </form>
     );

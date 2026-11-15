@@ -75,6 +75,8 @@
     --sidebar-accent-foreground: #1c1b19;
     --sidebar-border: #dad6d0;
     --sidebar-ring: #c2500f;
+    --radius: 0.75rem;
+    color-scheme: light;
 }
 
 .dark {
@@ -104,6 +106,7 @@
     --sidebar-accent-foreground: #edebe8;
     --sidebar-border: #302e2b;
     --sidebar-ring: #ff8a3d;
+    color-scheme: dark;
 }
 
 @layer base {
