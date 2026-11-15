@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
+        "check": "npm run format && npm run lint && npm run typecheck && npm run build",
         "dev": "next dev",
         "build": "next build",
         "start": "next start",

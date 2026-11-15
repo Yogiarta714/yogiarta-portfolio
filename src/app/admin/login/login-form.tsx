@@ -1,31 +1,36 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { loginAction } from "@/actions/auth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import type { ActionResult } from "@/lib/action-result";
-
-const inputClass =
-    "w-full rounded-md border bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-2";
 
 export function LoginForm() {
     const [state, formAction, pending] = useActionState<
         ActionResult | undefined,
         FormData
     >(loginAction, undefined);
-    // Email disimpan di state agar tidak terhapus saat form direset
+    // Email disimpan di state agar tidak terhapus saat form direset.
     const [email, setEmail] = useState("");
 
     const error = state && !state.ok ? state.error : null;
     const emailError = error?.fields?.email?.[0];
     const passwordError = error?.fields?.password?.[0];
 
+    // Setelah gagal, pindahkan fokus ke kolom yang perlu diperbaiki.
+    useEffect(() => {
+        if (!state || state.ok) return;
+        const target = state.error.fields?.email ? "email" : "password";
+        document.getElementById(target)?.focus();
+    }, [state]);
+
     return (
         <form action={formAction} className="space-y-4" noValidate>
             <div className="space-y-1.5">
-                <label htmlFor="email" className="text-sm font-medium">
-                    Email
-                </label>
-                <input
+                <Label htmlFor="email">Email</Label>
+                <Input
                     id="email"
                     name="email"
                     type="email"
@@ -35,20 +40,17 @@ export function LoginForm() {
                     onChange={(e) => setEmail(e.target.value)}
                     aria-invalid={Boolean(emailError)}
                     aria-describedby={emailError ? "email-error" : undefined}
-                    className={inputClass}
                 />
                 {emailError && (
-                    <p id="email-error" className="text-sm text-red-600">
+                    <p id="email-error" className="text-destructive text-sm">
                         {emailError}
                     </p>
                 )}
             </div>
 
             <div className="space-y-1.5">
-                <label htmlFor="password" className="text-sm font-medium">
-                    Password
-                </label>
-                <input
+                <Label htmlFor="password">Password</Label>
+                <Input
                     id="password"
                     name="password"
                     type="password"
@@ -58,28 +60,23 @@ export function LoginForm() {
                     aria-describedby={
                         passwordError ? "password-error" : undefined
                     }
-                    className={inputClass}
                 />
                 {passwordError && (
-                    <p id="password-error" className="text-sm text-red-600">
+                    <p id="password-error" className="text-destructive text-sm">
                         {passwordError}
                     </p>
                 )}
             </div>
 
             {error && error.code !== "VALIDATION" && (
-                <p role="alert" className="text-sm text-red-600">
+                <p role="alert" className="text-destructive text-sm">
                     {error.message}
                 </p>
             )}
 
-            <button
-                type="submit"
-                disabled={pending}
-                className="w-full rounded-md bg-black px-3 py-2 text-sm font-medium text-white disabled:opacity-60 dark:bg-white dark:text-black"
-            >
+            <Button type="submit" disabled={pending} className="w-full">
                 {pending ? "Masuk..." : "Masuk"}
-            </button>
+            </Button>
         </form>
     );
 }
