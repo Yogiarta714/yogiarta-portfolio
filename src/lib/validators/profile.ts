@@ -25,6 +25,16 @@ const optionalEmail = z
     )
     .transform((v) => (v === "" ? null : v));
 
+const optionalUuid = (label: string) =>
+    z
+        .string()
+        .trim()
+        .refine(
+            (v) => v === "" || z.string().uuid().safeParse(v).success,
+            `${label} tidak valid`,
+        )
+        .transform((v) => (v === "" ? null : v));
+
 export const profileSchema = z.object({
     fullName: required("Nama lengkap", 120),
     shortName: required("Nama pendek", 40),
@@ -41,6 +51,9 @@ export const profileSchema = z.object({
     publicEmail: optionalEmail,
     contactHeading: optional("Judul kontak", 200),
     footerText: optional("Teks footer", 200),
+    avatarMediaId: optionalUuid("Foto profil"),
+    cvMediaId: optionalUuid("CV"),
+    ogImageMediaId: optionalUuid("Gambar OG"),
     seoTitle: optional("Judul SEO", 70),
     seoDescription: optional("Deskripsi SEO", 160),
 });

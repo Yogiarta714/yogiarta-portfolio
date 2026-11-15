@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { MediaUploader } from "@/components/admin/media-uploader";
 import { listMedia } from "@/lib/admin-queries/media";
 import { formatBytes } from "@/lib/format";
+import { DeleteMediaButton } from "@/components/admin/delete-media-button";
 
 export const metadata: Metadata = { title: "Media" };
 
@@ -79,14 +80,20 @@ export default async function MediaPage() {
                                             Belum ada teks alternatif
                                         </p>
                                     )}
-                                    <a
-                                        href={item.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-primary inline-block text-sm font-medium underline-offset-4 hover:underline"
-                                    >
-                                        Buka ↗
-                                    </a>
+                                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                                        <a
+                                            href={item.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-primary text-sm font-medium underline-offset-4 hover:underline"
+                                        >
+                                            Buka ↗
+                                        </a>
+                                        <DeleteMediaButton
+                                            id={item.id}
+                                            name={item.originalName}
+                                        />
+                                    </div>
                                 </div>
                             </li>
                         ))}

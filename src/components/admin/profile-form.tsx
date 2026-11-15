@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { MediaPicker } from "@/components/admin/media-picker";
 import type { ActionResult } from "@/lib/action-result";
 import type { ProfileValues } from "@/lib/validators/profile";
+import type { MediaItem } from "@/lib/media-rules";
 
 type FieldProps = {
     name: string;
@@ -119,7 +121,13 @@ function Section({
     );
 }
 
-export function ProfileForm({ initial }: { initial: ProfileValues }) {
+export function ProfileForm({
+    initial,
+    media,
+}: {
+    initial: ProfileValues;
+    media: MediaItem[];
+}) {
     const [state, formAction, pending] = useActionState<
         ActionResult | undefined,
         FormData
@@ -150,6 +158,15 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
             setEditedAfter(state);
         },
     });
+
+    const setMedia =
+        (name: "avatarMediaId" | "cvMediaId" | "ogImageMediaId") =>
+        (id: string | null) => {
+            setValues((v) => ({ ...v, [name]: id ?? "" }));
+            setEditedAfter(state);
+        };
+    const images = media.filter((m) => m.kind === "image");
+    const pdfs = media.filter((m) => m.kind === "pdf");
 
     return (
         <form action={formAction} className="space-y-6" noValidate>
@@ -233,6 +250,41 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
             </Section>
 
             <Section
+                title="Gambar dan berkas"
+                description="Dipilih dari perpustakaan Media atau diunggah langsung dari sini."
+            >
+                <MediaPicker
+                    name="avatarMediaId"
+                    label="Foto profil"
+                    kind="image"
+                    valueId={values.avatarMediaId}
+                    items={images}
+                    onChange={setMedia("avatarMediaId")}
+                    error={error?.fields?.avatarMediaId?.[0]}
+                />
+                <MediaPicker
+                    name="cvMediaId"
+                    label="CV (PDF)"
+                    kind="pdf"
+                    valueId={values.cvMediaId}
+                    items={pdfs}
+                    onChange={setMedia("cvMediaId")}
+                    hint="Dipakai tombol Unduh CV."
+                    error={error?.fields?.cvMediaId?.[0]}
+                />
+                <MediaPicker
+                    name="ogImageMediaId"
+                    label="Gambar pratinjau tautan (OG)"
+                    kind="image"
+                    valueId={values.ogImageMediaId}
+                    items={images}
+                    onChange={setMedia("ogImageMediaId")}
+                    hint="Tampil saat tautan situs dibagikan. Disarankan rasio 1200×630."
+                    error={error?.fields?.ogImageMediaId?.[0]}
+                />
+            </Section>
+
+            <Section
                 title="SEO"
                 description="Dipakai mesin pencari dan pratinjau tautan. Kosong berarti memakai nilai bawaan."
             >
@@ -245,11 +297,6 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
                     {...bind("seoDescription")}
                 />
             </Section>
-
-            <p className="text-muted-foreground text-sm">
-                Foto profil, CV, dan gambar pratinjau (OG) diatur di langkah
-                upload media.
-            </p>
 
             <div className="bg-background/90 sticky bottom-0 -mx-1 flex flex-wrap items-center gap-4 border-t px-1 py-4 backdrop-blur">
                 <Button type="submit" disabled={pending}>

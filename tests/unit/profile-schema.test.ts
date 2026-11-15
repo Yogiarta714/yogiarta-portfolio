@@ -68,6 +68,25 @@ describe("profileSchema", () => {
         expect(raw.fullName).toBe("");
         expect(Object.keys(raw)).toEqual(Object.keys(profileSchema.shape));
     });
+
+    it("menerima uuid media yang benar dan mengubah kosong menjadi null", () => {
+        const id = "3f8e1c2a-5b7d-4e9f-8a1b-2c3d4e5f6a7b";
+        const result = profileSchema.safeParse(
+            readProfileForm(formWith({ avatarMediaId: id })),
+        );
+        expect(result.success).toBe(true);
+        if (result.success) {
+            expect(result.data.avatarMediaId).toBe(id);
+            expect(result.data.cvMediaId).toBeNull();
+        }
+    });
+
+    it("menolak id media yang bukan uuid", () => {
+        const result = profileSchema.safeParse(
+            readProfileForm(formWith({ cvMediaId: "bukan-uuid" })),
+        );
+        expect(result.success).toBe(false);
+    });
 });
 
 describe("toProfileValues", () => {

@@ -7,7 +7,8 @@ import { db } from "@/db";
 import { media } from "@/db/schema";
 import { fail, ok, type ActionResult } from "@/lib/action-result";
 import { getAdmin } from "@/lib/auth/require-admin";
-import { toMediaItem } from "@/lib/admin-queries/media";
+import { revalidatePath } from "next/cache";
+import { findMediaUsage, toMediaItem } from "@/lib/admin-queries/media";
 import {
     PATHNAME_PATTERN,
     kindFromMime,
@@ -98,4 +99,54 @@ export async function registerMediaAction(
         console.error("registerMediaAction gagal", error);
         return fail("DATABASE", "Gagal mencatat file. Coba lagi.");
     }
+}
+
+export async function deleteMediaAction(id: string): Promise<ActionResult> {
+    const admin = await getAdmin();
+    if (!admin)
+        return fail("UNAUTHORIZED", "Sesi berakhir. Silakan masuk lagi.");
+
+    if (!z.string().uuid().safeParse(id).success) {
+        return fail("VALIDATION", "Id file tidak valid.");
+    }
+
+    const [row] = await db
+        .select()
+        .from(media)
+        .where(eq(media.id, id))
+        .limit(1);
+    if (!row) return ok(null); // sudah terhapus: aman diulang
+
+    const usedBy = await findMediaUsage(id);
+    if (usedBy.length > 0) {
+        return fail(
+            "CONFLICT",
+            `File masih dipakai di: ${usedBy.join(", ")}. Lepaskan dulu sebelum menghapus.`,
+        );
+    }
+
+    // File di Blob dulu: kalau gagal di sini, tidak ada yang berubah dan aman diulang
+    try {
+        await del(row.blobUrl);
+    } catch (error) {
+        console.error("deleteMediaAction: gagal menghapus dari Blob", error);
+        return fail(
+            "UNKNOWN",
+            "Gagal menghapus file dari penyimpanan. Coba lagi.",
+        );
+    }
+
+    try {
+        await db.delete(media).where(eq(media.id, id));
+    } catch (error) {
+        console.error("deleteMediaAction: gagal menghapus baris media", error);
+        return fail(
+            "DATABASE",
+            "File terhapus, tapi catatannya belum. Coba hapus lagi.",
+        );
+    }
+
+    revalidatePath("/admin/media");
+    revalidatePath("/admin/profile");
+    return ok(null);
 }
