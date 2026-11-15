@@ -7,6 +7,7 @@ import { db } from "@/db";
 import { media } from "@/db/schema";
 import { fail, ok, type ActionResult } from "@/lib/action-result";
 import { getAdmin } from "@/lib/auth/require-admin";
+import { toMediaItem } from "@/lib/admin-queries/media";
 import {
     PATHNAME_PATTERN,
     kindFromMime,
@@ -28,22 +29,6 @@ const registerSchema = z.object({
 });
 
 export type RegisterMediaInput = z.input<typeof registerSchema>;
-
-type MediaRow = typeof media.$inferSelect;
-
-function toItem(row: MediaRow): MediaItem {
-    return {
-        id: row.id,
-        kind: row.kind,
-        url: row.blobUrl,
-        originalName: row.originalName,
-        mimeType: row.mimeType,
-        sizeBytes: row.sizeBytes,
-        width: row.width,
-        height: row.height,
-        altText: row.altText,
-    };
-}
 
 /** Dipanggil browser setelah upload ke Blob selesai. Server memeriksa file aslinya sebelum dicatat. */
 export async function registerMediaAction(
@@ -99,7 +84,7 @@ export async function registerMediaAction(
             .onConflictDoNothing()
             .returning();
 
-        if (inserted) return ok(toItem(inserted));
+        if (inserted) return ok(toMediaItem(inserted));
 
         // URL yang sama sudah tercatat: kembalikan barisnya (aman diulang).
         const [existing] = await db
@@ -107,7 +92,7 @@ export async function registerMediaAction(
             .from(media)
             .where(eq(media.blobUrl, meta.url))
             .limit(1);
-        if (existing) return ok(toItem(existing));
+        if (existing) return ok(toMediaItem(existing));
         return fail("CONFLICT", "File sudah tercatat dengan data lain.");
     } catch (error) {
         console.error("registerMediaAction gagal", error);
