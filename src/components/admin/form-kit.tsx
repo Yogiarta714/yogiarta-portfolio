@@ -112,3 +112,43 @@ export function Section({
         </section>
     );
 }
+
+export function SelectField({
+    name,
+    label,
+    value,
+    onChange,
+    options,
+    hint,
+    error,
+}: {
+    name: string;
+    label: string;
+    value: string;
+    onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+    options: { value: string; label: string }[];
+    hint?: string;
+    error?: string;
+}) {
+    return (
+        <div className="space-y-1.5">
+            <Label htmlFor={name}>{label}</Label>
+            <select
+                id={name}
+                name={name}
+                value={value}
+                onChange={onChange}
+                aria-invalid={Boolean(error)}
+                className="border-input bg-background dark:bg-secondary focus-visible:ring-ring aria-invalid:border-destructive h-11 w-full rounded-lg border px-3 text-base outline-none focus-visible:ring-2"
+            >
+                {options.map((o) => (
+                    <option key={o.value} value={o.value}>
+                        {o.label}
+                    </option>
+                ))}
+            </select>
+            {error && <p className="text-destructive text-sm">{error}</p>}
+            {hint && <p className="text-muted-foreground text-sm">{hint}</p>}
+        </div>
+    );
+}
