@@ -117,4 +117,26 @@ describe("projectInputSchema", () => {
             false,
         );
     });
+
+    it("mewajibkan thumbnail untuk proyek yang terbit", () => {
+        const result = projectInputSchema.safeParse({
+            ...base,
+            status: "published",
+        });
+        expect(result.success).toBe(false);
+        if (!result.success) {
+            expect(
+                result.error.flatten().fieldErrors.thumbnailMediaId,
+            ).toBeDefined();
+        }
+    });
+
+    it("menerima proyek terbit yang punya thumbnail", () => {
+        const result = projectInputSchema.safeParse({
+            ...base,
+            status: "published",
+            thumbnailMediaId: id1,
+        });
+        expect(result.success).toBe(true);
+    });
 });

@@ -21,6 +21,7 @@ import { resolvePublishedAt } from "@/lib/project-publish";
 import { moveId } from "@/lib/reorder";
 import {
     projectInputSchema,
+    projectStatusSchema,
     type ProjectData,
 } from "@/lib/validators/projects";
 import { directionSchema, idSchema } from "@/lib/validators/skills";
@@ -235,17 +236,27 @@ export async function setProjectStatusAction(
     status: string,
 ): Promise<ActionResult> {
     if (!(await getAdmin())) return unauthorized();
-    const parsedStatus = projectInputSchema.shape.status.safeParse(status);
+    const parsedStatus = projectStatusSchema.safeParse(status);
     if (!idSchema.safeParse(id).success || !parsedStatus.success)
         return invalidId();
 
     try {
         const [existing] = await db
-            .select({ publishedAt: projects.publishedAt })
+            .select({
+                publishedAt: projects.publishedAt,
+                thumbnailMediaId: projects.thumbnailMediaId,
+            })
             .from(projects)
             .where(eq(projects.id, id))
             .limit(1);
         if (!existing) return notFound();
+
+        if (parsedStatus.data === "published" && !existing.thumbnailMediaId) {
+            return fail(
+                "CONFLICT",
+                "Tambahkan thumbnail dulu di halaman ubah proyek sebelum mempublikasikan.",
+            );
+        }
 
         await db
             .update(projects)
