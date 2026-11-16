@@ -1,77 +1,102 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useRef } from "react";
 import { useAction } from "@/components/admin/use-action";
 import { Button } from "@/components/ui/button";
 import type { ActionResult } from "@/lib/action-result";
 
 export function ConfirmDelete({
     name,
-    prompt = "Hapus?",
+    description,
     action,
 }: {
     name: string;
-    prompt?: string;
+    description?: string;
     action: () => Promise<ActionResult>;
 }) {
-    const [confirming, setConfirming] = useState(false);
-    const { pending, error, run } = useAction();
+    const dialogRef = useRef<HTMLDialogElement>(null);
+    const titleId = useId();
+    const descId = useId();
+    const { pending, error, run, reset } = useAction();
 
-    if (!confirming) {
-        return (
-            <div className="space-y-1">
-                <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setConfirming(true)}
-                    aria-label={`Hapus ${name}`}
-                >
-                    Hapus
-                </Button>
-                {error && (
-                    <p
-                        role="alert"
-                        className="text-destructive max-w-xs text-sm"
-                    >
-                        {error}
-                    </p>
-                )}
-            </div>
-        );
+    function open() {
+        reset();
+        dialogRef.current?.showModal();
+    }
+
+    function close() {
+        dialogRef.current?.close();
     }
 
     return (
-        <div
-            role="group"
-            aria-label={`Konfirmasi hapus ${name}`}
-            className="flex flex-wrap items-center gap-2"
-        >
-            <span className="text-sm">{prompt}</span>
-            <Button
-                type="button"
-                variant="destructive"
-                size="sm"
-                disabled={pending}
-                onClick={() =>
-                    run(
-                        action,
-                        () => setConfirming(false),
-                        () => setConfirming(false),
-                    )
-                }
-            >
-                {pending ? "Menghapus…" : "Ya, hapus"}
-            </Button>
+        <>
             <Button
                 type="button"
                 variant="ghost"
                 size="sm"
-                disabled={pending}
-                onClick={() => setConfirming(false)}
+                aria-label={`Hapus ${name}`}
+                onClick={open}
+                className="hover:bg-destructive dark:hover:text-background hover:text-white"
             >
-                Batal
+                Hapus
             </Button>
-        </div>
+            
+            <dialog
+                ref={dialogRef}
+                aria-labelledby={titleId}
+                aria-describedby={descId}
+                // Selama proses berjalan, jendela tidak boleh tertutup oleh Esc atau klik latar.
+                onCancel={(e) => {
+                    if (pending) e.preventDefault();
+                }}
+                onClick={(e) => {
+                    if (e.target === e.currentTarget && !pending) close();
+                }}
+                className="bg-card text-card-foreground border-border/60 m-auto w-[min(92vw,26rem)] rounded-2xl border p-0 shadow-xl backdrop:bg-black/60 backdrop:backdrop-blur-sm"
+            >
+                <div className="space-y-4 p-6">
+                    <div className="space-y-1.5">
+                        <h2
+                            id={titleId}
+                            className="font-sans text-lg font-semibold"
+                        >
+                            Hapus “{name}”?
+                        </h2>
+                        <p
+                            id={descId}
+                            className="text-muted-foreground text-sm"
+                        >
+                            {description ??
+                                "Tindakan ini tidak bisa dibatalkan."}
+                        </p>
+                    </div>
+
+                    {error && (
+                        <p role="alert" className="text-destructive text-sm">
+                            {error}
+                        </p>
+                    )}
+
+                    <div className="flex justify-end gap-2">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            disabled={pending}
+                            onClick={close}
+                        >
+                            Batal
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="destructive"
+                            disabled={pending}
+                            onClick={() => run(action, close)}
+                        >
+                            {pending ? "Menghapus…" : "Ya, hapus"}
+                        </Button>
+                    </div>
+                </div>
+            </dialog>
+        </>
     );
 }

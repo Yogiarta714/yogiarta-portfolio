@@ -26,6 +26,10 @@ export function useAction() {
             }
         });
     }
+    
+    function reset() {
+        setError(null);
+    }
 
-    return { pending, error, run };
+    return { pending, error, run, reset };
 }

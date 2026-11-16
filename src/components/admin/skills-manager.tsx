@@ -194,10 +194,10 @@ function CategoryItem({
                 </Button>
                 <ConfirmDelete
                     name={category.name}
-                    prompt={
+                    description={
                         techCount > 0
-                            ? `Hapus kategori? ${techCount} teknologi menjadi tanpa kategori.`
-                            : "Hapus kategori ini?"
+                            ? `${techCount} teknologi di dalamnya tidak ikut terhapus, tapi menjadi tanpa kategori.`
+                            : undefined
                     }
                     action={() => deleteCategoryAction(category.id)}
                 />
@@ -383,7 +383,7 @@ function TechnologyItem({
                 </Button>
                 <ConfirmDelete
                     name={tech.name}
-                    prompt="Hapus teknologi ini?"
+                    description="Teknologi dihapus dari daftar. Penghapusan ditolak kalau masih dipakai proyek."
                     action={() => deleteTechnologyAction(tech.id)}
                 />
             </div>
