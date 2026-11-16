@@ -139,7 +139,7 @@ export function SelectField({
                 value={value}
                 onChange={onChange}
                 aria-invalid={Boolean(error)}
-                className="border-input bg-background dark:bg-input/30 focus-visible:ring-ring aria-invalid:border-destructive h-11 w-full rounded-lg border px-3 text-base outline-none focus-visible:ring-2"
+                className="border-input bg-background dark:bg-secondary focus-visible:ring-ring aria-invalid:border-destructive h-11 w-full rounded-lg border px-3 text-base outline-none focus-visible:ring-2"
             >
                 {options.map((o) => (
                     <option key={o.value} value={o.value}>

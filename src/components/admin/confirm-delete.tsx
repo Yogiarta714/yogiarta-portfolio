@@ -36,11 +36,11 @@ export function ConfirmDelete({
                 size="sm"
                 aria-label={`Hapus ${name}`}
                 onClick={open}
-                className="hover:bg-destructive dark:hover:text-background hover:text-white"
+                className="hover:bg-destructive dark:hover:bg-destructive dark:hover:text-background hover:text-white"
             >
                 Hapus
             </Button>
-            
+
             <dialog
                 ref={dialogRef}
                 aria-labelledby={titleId}

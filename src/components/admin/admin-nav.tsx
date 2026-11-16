@@ -10,14 +10,14 @@ export function AdminNav() {
 
     return (
         <nav aria-label="Navigasi admin">
-            <ul className="space-y-1">
+            <ul className="space-y-0.5">
                 {adminNavItems.map((item) => {
                     if (!item.ready) {
                         return (
                             <li key={item.href}>
                                 <span
                                     aria-disabled="true"
-                                    className="text-muted-foreground/60 flex items-center justify-between rounded-md px-3 py-2 text-sm"
+                                    className="text-muted-foreground/60 flex items-center justify-between rounded-md px-3 py-1.5 text-sm"
                                 >
                                     {item.label}
                                     <span className="font-mono text-[10px] tracking-wide uppercase">
@@ -39,7 +39,7 @@ export function AdminNav() {
                                 href={item.href}
                                 aria-current={active ? "page" : undefined}
                                 className={cn(
-                                    "block rounded-md px-3 py-2 text-sm transition-colors",
+                                    "block rounded-md px-3 py-1.5 text-sm transition-colors",
                                     active
                                         ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                                         : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
