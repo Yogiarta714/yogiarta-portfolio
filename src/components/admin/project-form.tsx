@@ -375,18 +375,18 @@ export function ProjectForm({
                         {pending
                             ? "Menyimpan…"
                             : dirty
-                                ? "Ada perubahan yang belum disimpan"
-                                : justSaved
-                                    ? "Tersimpan."
-                                    : "Belum ada perubahan"}
+                              ? "Ada perubahan yang belum disimpan"
+                              : justSaved
+                                ? "Tersimpan."
+                                : "Belum ada perubahan"}
                     </p>
                 )}
                 <Button type="submit" disabled={pending || !dirty}>
                     {pending
                         ? "Menyimpan..."
                         : mode === "new"
-                            ? "Buat proyek"
-                            : "Simpan perubahan"}
+                          ? "Buat proyek"
+                          : "Simpan perubahan"}
                 </Button>
             </div>
         </form>
