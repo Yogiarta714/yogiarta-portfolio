@@ -15,6 +15,7 @@ type FieldProps = {
     rows?: number;
     required?: boolean;
     type?: string;
+    list?: string;
 };
 
 export function Field({
@@ -29,6 +30,7 @@ export function Field({
     rows = 3,
     required,
     type = "text",
+    list,
 }: FieldProps) {
     const errorId = `${name}-error`;
     const hintId = `${name}-hint`;
@@ -61,7 +63,12 @@ export function Field({
             {multiline ? (
                 <Textarea rows={rows} className="text-base" {...common} />
             ) : (
-                <Input type={type} className="h-11 text-base" {...common} />
+                <Input
+                    type={type}
+                    list={list}
+                    className="h-11 text-base"
+                    {...common}
+                />
             )}
             {error && (
                 <p id={errorId} className="text-destructive text-sm">

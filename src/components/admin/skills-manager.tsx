@@ -14,59 +14,13 @@ import {
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
 import { Field, Section, SelectField } from "@/components/admin/form-kit";
 import { useAction } from "@/components/admin/use-action";
+import { MoveButtons } from "@/components/admin/move-buttons";
 import { Button } from "@/components/ui/button";
 import type { ActionResult } from "@/lib/action-result";
 import type { CategoryRow, TechnologyRow } from "@/lib/admin-queries/skills";
 
-type Direction = "up" | "down";
-
 const rowClass =
     "border-border/60 bg-background/40 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-xl border px-4 py-3";
-
-/* ------------------------------ Tombol urutan ------------------------------ */
-
-function MoveButtons({
-    name,
-    canUp,
-    canDown,
-    onMove,
-}: {
-    name: string;
-    canUp: boolean;
-    canDown: boolean;
-    onMove: (direction: Direction) => Promise<ActionResult>;
-}) {
-    const { pending, error, run } = useAction();
-    return (
-        <div className="flex items-center gap-1">
-            <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                disabled={!canUp || pending}
-                aria-label={`Naikkan ${name}`}
-                onClick={() => run(() => onMove("up"))}
-            >
-                ↑
-            </Button>
-            <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                disabled={!canDown || pending}
-                aria-label={`Turunkan ${name}`}
-                onClick={() => run(() => onMove("down"))}
-            >
-                ↓
-            </Button>
-            {error && (
-                <span role="alert" className="text-destructive text-sm">
-                    {error}
-                </span>
-            )}
-        </div>
-    );
-}
 
 /* -------------------------------- Kategori -------------------------------- */
 

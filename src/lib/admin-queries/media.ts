@@ -1,7 +1,7 @@
 import "server-only";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { media, profile } from "@/db/schema";
+import { media, profile, projectMedia, projects } from "@/db/schema";
 import type { MediaItem } from "@/lib/media-rules";
 
 type MediaRow = typeof media.$inferSelect;
@@ -44,5 +44,20 @@ export async function findMediaUsage(id: string): Promise<string[]> {
     if (row?.avatar === id) used.push("Foto profil");
     if (row?.cv === id) used.push("CV");
     if (row?.og === id) used.push("Gambar OG");
+
+    const [thumbnails, galleries] = await Promise.all([
+        db
+            .select({ title: projects.title })
+            .from(projects)
+            .where(eq(projects.thumbnailMediaId, id)),
+        db
+            .select({ title: projects.title })
+            .from(projectMedia)
+            .innerJoin(projects, eq(projects.id, projectMedia.projectId))
+            .where(eq(projectMedia.mediaId, id)),
+    ]);
+    for (const p of thumbnails) used.push(`Thumbnail proyek “${p.title}”`);
+    for (const p of galleries) used.push(`Galeri proyek “${p.title}”`);
+
     return used;
 }
