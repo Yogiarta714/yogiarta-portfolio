@@ -33,3 +33,13 @@ export const optionalHttpUrl = (label: string) =>
             `${label} harus berupa tautan http atau https`,
         )
         .transform((v) => (v === "" ? null : v));
+
+export const optionalUuid = (label: string) =>
+    z
+        .string()
+        .trim()
+        .refine(
+            (v) => v === "" || z.string().uuid().safeParse(v).success,
+            `${label} tidak valid`,
+        )
+        .transform((v) => (v === "" ? null : v));
