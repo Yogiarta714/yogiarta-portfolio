@@ -13,7 +13,7 @@ export const adminNavItems: AdminNavItem[] = [
     { label: "Pendidikan", href: "/admin/education", ready: true },
     { label: "Sertifikat", href: "/admin/certificates", ready: false },
     { label: "Prestasi", href: "/admin/achievements", ready: false },
-    { label: "Tautan sosial", href: "/admin/social-links", ready: false },
+    { label: "Tautan sosial", href: "/admin/social-links", ready: true },
     { label: "Media", href: "/admin/media", ready: true },
     { label: "Pengaturan", href: "/admin/settings", ready: false },
 ];
