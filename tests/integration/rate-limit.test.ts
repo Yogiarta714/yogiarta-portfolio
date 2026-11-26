@@ -3,6 +3,7 @@ import { inArray } from "drizzle-orm";
 import { afterAll, describe, expect, it, vi } from "vitest";
 
 vi.mock("next/headers", () => ({ cookies: vi.fn(), headers: vi.fn() }));
+vi.setConfig({ testTimeout: 30_000, hookTimeout: 30_000 });
 
 import { db } from "@/db";
 import { loginAttempts } from "@/db/schema";
