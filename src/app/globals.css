@@ -203,24 +203,45 @@ body:has(> .site) {
 }
 
 @keyframes s-wordin {
-    to { opacity: 1; transform: none; }
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }
 @keyframes s-fadeup {
-    to { opacity: 1; transform: none; }
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }
 @keyframes s-ping {
-    0% { transform: scale(0.5); opacity: 0.9; }
-    100% { transform: scale(1.6); opacity: 0; }
+    0% {
+        transform: scale(0.5);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1.6);
+        opacity: 0;
+    }
 }
 @keyframes s-floaty {
-    0%, 100% { translate: 0 0; }
-    50% { translate: 0 -10px; }
+    0%,
+    100% {
+        translate: 0 0;
+    }
+    50% {
+        translate: 0 -10px;
+    }
 }
 @keyframes s-ul {
-    to { background-size: 100% 0.08em; }
+    to {
+        background-size: 100% 0.08em;
+    }
 }
 @keyframes s-slide {
-    to { transform: translateX(-50%); }
+    to {
+        transform: translateX(-50%);
+    }
 }
 
 /* hero */
@@ -229,8 +250,16 @@ body:has(> .site) {
     inset: 0;
     pointer-events: none;
     background:
-        radial-gradient(520px circle at 70% 30%, color-mix(in srgb, var(--s-pop) 16%, transparent), transparent 62%),
-        radial-gradient(700px circle at 15% 85%, color-mix(in srgb, var(--s-accent) 14%, transparent), transparent 60%);
+        radial-gradient(
+            520px circle at 70% 30%,
+            color-mix(in srgb, var(--s-pop) 16%, transparent),
+            transparent 62%
+        ),
+        radial-gradient(
+            700px circle at 15% 85%,
+            color-mix(in srgb, var(--s-accent) 14%, transparent),
+            transparent 60%
+        );
 }
 .hero-grid {
     position: absolute;
@@ -281,10 +310,18 @@ body:has(> .site) {
     animation: s-floaty 6s ease-in-out infinite;
 }
 .s-stripes {
-    background: repeating-linear-gradient(135deg, var(--s-surface) 0 14px, var(--s-surface2) 14px 28px);
+    background: repeating-linear-gradient(
+        135deg,
+        var(--s-surface) 0 14px,
+        var(--s-surface2) 14px 28px
+    );
 }
 .s-photo-tint {
-    background: linear-gradient(160deg, transparent 40%, color-mix(in srgb, var(--s-accent) 22%, transparent));
+    background: linear-gradient(
+        160deg,
+        transparent 40%,
+        color-mix(in srgb, var(--s-accent) 22%, transparent)
+    );
 }
 
 /* tautan dengan garis bawah yang tumbuh */
@@ -294,7 +331,9 @@ body:has(> .site) {
     background-size: 0 1px;
     background-repeat: no-repeat;
     background-position: 0 100%;
-    transition: background-size 0.3s var(--s-ease), color 0.25s;
+    transition:
+        background-size 0.3s var(--s-ease),
+        color 0.25s;
 }
 .s-link:hover {
     background-size: 100% 1px;
@@ -319,7 +358,13 @@ body:has(> .site) {
     padding-block: 18px;
     border-block: 1px solid var(--s-line);
     background: var(--s-surface);
-    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(
+        90deg,
+        transparent,
+        #000 8%,
+        #000 92%,
+        transparent
+    );
 }
 .s-track {
     display: flex;
@@ -346,7 +391,9 @@ body:has(> .site) {
     color: var(--s-muted);
     font-family: var(--font-mono);
     font-size: 13.5px;
-    transition: color 0.25s, border-color 0.25s;
+    transition:
+        color 0.25s,
+        border-color 0.25s;
 }
 .s-tag:hover {
     color: var(--s-fg);
@@ -365,7 +412,9 @@ body:has(> .site) {
 
 /* muncul saat di-scroll */
 .reveal {
-    transition: opacity 0.8s var(--s-ease), transform 0.8s var(--s-ease);
+    transition:
+        opacity 0.8s var(--s-ease),
+        transform 0.8s var(--s-ease);
     transition-delay: var(--delay, 0s);
 }
 .reveal-hidden {

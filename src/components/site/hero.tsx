@@ -128,9 +128,9 @@ export function Hero({
                                         className="s-link"
                                         {...(external
                                             ? {
-                                                target: "_blank",
-                                                rel: "noopener noreferrer",
-                                            }
+                                                  target: "_blank",
+                                                  rel: "noopener noreferrer",
+                                              }
                                             : {})}
                                     >
                                         {s.label}
