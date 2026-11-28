@@ -1,6 +1,16 @@
-export function Eyebrow({ index, label }: { index: string; label: string }) {
+export function Eyebrow({
+    index,
+    label,
+    plain = false,
+}: {
+    index: string;
+    label: string;
+    plain?: boolean;
+}) {
     return (
-        <div className="s-eyebrow text-s-muted flex items-center gap-3.5 font-mono text-[13px] tracking-[0.08em] uppercase">
+        <div
+            className={`${plain ? "" : "s-eyebrow"} text-s-muted flex items-center gap-3.5 font-mono text-[13px] tracking-[0.08em] uppercase`}
+        >
             <b className="text-s-accent font-medium">{index}</b>
             {label}
         </div>

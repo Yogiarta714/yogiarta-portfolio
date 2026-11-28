@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function LoginPage() {
     return (
         <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
-            <p className="font-heading text-xl font-semibold">yogiarta</p>
+            <p className="font-heading text-xl font-semibold">Yogi Winata</p>
             <Card className="w-full max-w-sm">
                 <CardContent className="space-y-6">
                     <div className="space-y-1">

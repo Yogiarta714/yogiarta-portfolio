@@ -9,7 +9,7 @@ export function SidebarContent({ email }: { email: string }) {
         <div className="flex h-full flex-col gap-3">
             <div className="hidden px-3 md:block">
                 <p className="font-heading text-xl leading-tight font-semibold">
-                    yogiarta
+                    Yogi Winata
                 </p>
                 <p className="text-muted-foreground font-mono text-xs">admin</p>
             </div>

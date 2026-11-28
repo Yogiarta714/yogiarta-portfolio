@@ -17,7 +17,7 @@ export function SiteThemeToggle() {
             type="button"
             onClick={toggle}
             aria-label="Toggle light or dark theme"
-            className="border-s-line hover:bg-s-surface2 hover:border-s-accent grid size-10 place-items-center rounded-full border transition-colors active:scale-95"
+            className="border-s-line hover:bg-s-surface2 hover:text-s-accent grid size-10 place-items-center rounded-full border transition-colors active:scale-95"
         >
             <svg
                 width="18"
