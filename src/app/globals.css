@@ -180,6 +180,7 @@
     --s-pop: #0e7490;
     --s-on-accent: #ffffff;
     --s-nav: rgba(255, 255, 255, 0.86);
+    --s-ease: cubic-bezier(0.22, 0.8, 0.2, 1);
 }
 
 .dark {
@@ -199,6 +200,208 @@
 /* Latar di luar konten (area overscroll) ikut warna situs publik */
 body:has(> .site) {
     background: var(--s-bg);
+}
+
+@keyframes s-wordin {
+    to { opacity: 1; transform: none; }
+}
+@keyframes s-fadeup {
+    to { opacity: 1; transform: none; }
+}
+@keyframes s-ping {
+    0% { transform: scale(0.5); opacity: 0.9; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+@keyframes s-floaty {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -10px; }
+}
+@keyframes s-ul {
+    to { background-size: 100% 0.08em; }
+}
+@keyframes s-slide {
+    to { transform: translateX(-50%); }
+}
+
+/* hero */
+.hero-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(520px circle at 70% 30%, color-mix(in srgb, var(--s-pop) 16%, transparent), transparent 62%),
+        radial-gradient(700px circle at 15% 85%, color-mix(in srgb, var(--s-accent) 14%, transparent), transparent 60%);
+}
+.hero-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image:
+        linear-gradient(var(--s-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--s-line) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at 60% 35%, #000 0%, transparent 70%);
+}
+.hero-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.55em) rotate(2deg);
+    animation: s-wordin 0.9s var(--s-ease) forwards;
+    animation-delay: calc(0.25s + var(--i) * 0.075s);
+}
+.hero-grad {
+    background: linear-gradient(100deg, var(--s-accent), var(--s-accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.hero-ul {
+    background-image: linear-gradient(var(--s-pop), var(--s-pop));
+    background-repeat: no-repeat;
+    background-position: 0 94%;
+    background-size: 0 0.08em;
+    animation: s-ul 1s var(--s-ease) 1.5s forwards;
+}
+.fade-up {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: s-fadeup 0.9s var(--s-ease) forwards;
+    animation-delay: var(--delay, 0s);
+}
+.s-dot::after {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border-radius: 9999px;
+    border: 1.5px solid var(--s-pop);
+    animation: s-ping 2s infinite;
+}
+.s-float {
+    animation: s-floaty 6s ease-in-out infinite;
+}
+.s-stripes {
+    background: repeating-linear-gradient(135deg, var(--s-surface) 0 14px, var(--s-surface2) 14px 28px);
+}
+.s-photo-tint {
+    background: linear-gradient(160deg, transparent 40%, color-mix(in srgb, var(--s-accent) 22%, transparent));
+}
+
+/* tautan dengan garis bawah yang tumbuh */
+.s-link {
+    padding-block: 6px;
+    background-image: linear-gradient(var(--s-pop), var(--s-pop));
+    background-size: 0 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 0.3s var(--s-ease), color 0.25s;
+}
+.s-link:hover {
+    background-size: 100% 1px;
+    color: var(--s-fg);
+}
+
+/* judul bagian */
+.s-eyebrow::after {
+    content: "";
+    flex: 1;
+    max-width: 260px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--s-line), transparent);
+}
+
+/* pita teknologi */
+.s-marquee {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: hidden;
+    padding-block: 18px;
+    border-block: 1px solid var(--s-line);
+    background: var(--s-surface);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.s-track {
+    display: flex;
+    width: max-content;
+    gap: 12px;
+    animation: s-slide 38s linear infinite;
+}
+.s-track.rev {
+    animation-direction: reverse;
+    animation-duration: 46s;
+}
+.s-marquee:hover .s-track {
+    animation-play-state: paused;
+}
+.s-tag {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--s-line);
+    border-radius: 9999px;
+    background: var(--s-bg);
+    color: var(--s-muted);
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    transition: color 0.25s, border-color 0.25s;
+}
+.s-tag:hover {
+    color: var(--s-fg);
+    border-color: var(--s-pop);
+}
+.s-tag::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--s-accent);
+}
+.s-tag:nth-child(3n)::before {
+    background: var(--s-pop);
+}
+
+/* muncul saat di-scroll */
+.reveal {
+    transition: opacity 0.8s var(--s-ease), transform 0.8s var(--s-ease);
+    transition-delay: var(--delay, 0s);
+}
+.reveal-hidden {
+    opacity: 0;
+    transform: translateY(28px);
+}
+.reveal-hidden.reveal-in {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+    .hero-word,
+    .fade-up,
+    .reveal-hidden {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .hero-ul {
+        background-size: 100% 0.08em;
+    }
+    .s-track {
+        flex-wrap: wrap;
+        width: auto;
+        justify-content: center;
+    }
+    .s-track [aria-hidden="true"],
+    .s-track[aria-hidden="true"] {
+        display: none;
+    }
 }
 
 @media (prefers-reduced-motion: no-preference) {

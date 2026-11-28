@@ -64,3 +64,6 @@ export async function getSocialLinks() {
         .where(eq(socialLinks.isVisible, true))
         .orderBy(asc(socialLinks.sortOrder), asc(socialLinks.id));
 }
+
+export type SiteProfile = NonNullable<Awaited<ReturnType<typeof getSiteProfile>>>;
+export type SocialLinkItem = Awaited<ReturnType<typeof getSocialLinks>>[number];
